@@ -126,7 +126,9 @@ void print_tcp_backlog() {
     }
 
     int somaxconn;
-    fscanf(file, "%d", &somaxconn);
+    if(fscanf(file, "%d", &somaxconn)!=1){
+       perror("print_tcp_backlog");
+    }
     printf("TCP Backlog (somaxconn): %d\n", somaxconn);
     fclose(file);
 }
@@ -153,8 +155,10 @@ void get_process_cpu_time(int pid, unsigned long *total_time) {
     }
 
     // Skip initial fields and read utime and stime
-    fscanf(file, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu %lu %lu",
-           &utime, &stime, &cutime, &cstime);
+    if(fscanf(file, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*u %*u %*u %*u %lu %lu %lu %lu",
+           &utime, &stime, &cutime, &cstime)!=1){
+    	perror("get_process_cpu_time error");
+    }
     fclose(file);
 
     *total_time = utime + stime + cutime + cstime;
